@@ -1,1 +1,1 @@
-# SelfSovereignIdentitySolution
+# Self Sovereign Identity Solution
