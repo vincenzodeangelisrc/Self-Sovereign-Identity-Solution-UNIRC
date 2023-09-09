@@ -32,6 +32,7 @@ import org.web3j.tx.gas.StaticGasProvider;
 import org.web3j.utils.Numeric;
 
 import it.unirc.Ethereum.SmartContract;
+import it.unirc.Trinsic.Trinsic;
 
 /**
  * Servlet implementation class CP_PolicySet
@@ -53,6 +54,16 @@ public class CP_PolicySet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		Part filePart1 = request.getPart("credential");
+		String credential=new String(filePart1.getInputStream().readAllBytes());
+		try {
+			if(!Trinsic.verifyCredential(credential)) {return;}
+		} catch (Exception e) {
+		}
+
+		
+		long start=System.nanoTime();
 		try {
 			String EthAddress=request.getParameter("EthAddress");
 
@@ -112,10 +123,12 @@ public class CP_PolicySet extends HttpServlet {
 			Files.write(Paths.get(path), fileContent, StandardCharsets.UTF_8);
 
 
-
+			long fin=System.nanoTime();
+			System.out.println(fin-start);
+			
 
 			//Notarization
-			String contractAddr="0x04340909c8b52abe7964a1e0c4d993958c13b937";
+			String contractAddr="0xdbc89db0f94815f72237f87dc656a0fd01680da4";
 			String endPoint = "https://ropsten.infura.io/v3/b416fd1f93c8450d849e176e06d37c88";
 			FileReader f=new FileReader(this.getServletContext().getRealPath("src/it/unirc/CP/Keys/CP_PrivateEthereumKey.txt").replace("\\.metadata\\.plugins\\org.eclipse.wst.server.core\\tmp0\\wtpwebapps", ""));
 			BufferedReader b=new BufferedReader(f);

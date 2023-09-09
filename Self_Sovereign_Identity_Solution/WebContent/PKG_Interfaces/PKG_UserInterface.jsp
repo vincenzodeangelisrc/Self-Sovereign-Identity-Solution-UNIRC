@@ -10,9 +10,10 @@
 Hi, user, I'm PKG.
 <br>
 Please, give me your identity number and the total number of labels you need.
-<form action="../PKG_GenerateUserKey" method="post">
+<form action="../PKG_GenerateUserKey" method="post" enctype='multipart/form-data'>
 ID:<input tabindex="1" size="18" id="id" name="id" type="text" value=""> <br>
 Total number of labels <input tabindex="1" size="18" id="number" name="number" type="text" value=""> <br>
+Credential in Json Format: <input type="file" name="credential" />	<br>
 	<button tabindex="7" type="submit" class="btn btn-succes btn-large">Generate keys</button>
 </form>
 <%String[] privateKeys=(String[])request.getAttribute("privateKeys");

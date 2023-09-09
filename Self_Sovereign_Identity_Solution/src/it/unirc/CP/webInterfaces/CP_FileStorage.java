@@ -28,6 +28,7 @@ import org.web3j.tx.gas.StaticGasProvider;
 import org.web3j.utils.Numeric;
 
 import it.unirc.Ethereum.SmartContract;
+import it.unirc.Trinsic.Trinsic;
 
 /**
  * Servlet implementation class FileStorage
@@ -52,6 +53,18 @@ public class CP_FileStorage extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
+			
+			Part filePart1 = request.getPart("credential");
+			String credential=new String(filePart1.getInputStream().readAllBytes());
+			try {
+				if(!Trinsic.verifyCredential(credential)) {return;}
+			} catch (Exception e) {
+			}
+
+			
+			
+			
+			
 			String EthAddress=request.getParameter("EthAddress");
 			
 			boolean found=false;
@@ -100,9 +113,10 @@ public class CP_FileStorage extends HttpServlet {
 			pw.println(sf+";"+IPFSindex+";"+label+";"+"ID_u");			
 			pw.close();
 			
+		
 			
 			//Notarization
-			String contractAddr="0x04340909c8b52abe7964a1e0c4d993958c13b937";
+			String contractAddr="0xdbc89db0f94815f72237f87dc656a0fd01680da4";
 			String endPoint = "https://ropsten.infura.io/v3/b416fd1f93c8450d849e176e06d37c88";
 			FileReader f=new FileReader(this.getServletContext().getRealPath("src/it/unirc/CP/Keys/CP_PrivateEthereumKey.txt").replace("\\.metadata\\.plugins\\org.eclipse.wst.server.core\\tmp0\\wtpwebapps", ""));
 			BufferedReader b=new BufferedReader(f);
@@ -115,10 +129,12 @@ public class CP_FileStorage extends HttpServlet {
 			MessageDigest digest = MessageDigest.getInstance("SHA-256");
 			byte[] encodedhash = digest.digest((sf+IPFSindex+label).getBytes(StandardCharsets.UTF_8));
 			
-			TransactionReceipt receipt = n.startNotarization(BigInteger.ONE, EthAddress,
-					Numeric.hexStringToByteArray(bytesToHex(encodedhash))).send();
+			//TransactionReceipt receipt = n.startNotarization(BigInteger.ONE, EthAddress,
+					//Numeric.hexStringToByteArray(bytesToHex(encodedhash))).send();
 			
-			System.out.println(receipt);
+			//System.out.println(receipt);
+			
+		
 			
 			request.setAttribute("SCAddress", contractAddr);
 		    request.getRequestDispatcher("CP_Interfaces/CP_FileStorage.jsp").forward(request, response);

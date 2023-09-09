@@ -13,6 +13,7 @@ Please, give me your Ethereum Address and the Storage Information File
 <form action="../CP_FileStorage" method="post" enctype='multipart/form-data'>
 Ethereum Address:<input tabindex="1" size="100" id="EthAddress" name="EthAddress" type="text" value=""> <br>
 Storage File: 	 <input type="file" tabindex="3" size="25" name="StorageFile" > <br>
+Credential in Json Format: <input type="file" name="credential" />	<br>
 	<button tabindex="7" type="submit" class="btn btn-succes btn-large">Send</button>
 </form>
 

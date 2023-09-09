@@ -10,8 +10,9 @@
 Hi, service provider, I'm PKG.
 <br>
 Please, give me your attributes separated by ;.
-<form action="../PKG_GenerateSPKey" method="post">
+<form action="../PKG_GenerateSPKey" method="post" enctype='multipart/form-data'>
 List of attributes: <input tabindex="1" size="18" id="attributes" name="attributes" type="text" value=""> <br>
+Credential in Json Format: <input type="file" name="credential" />	<br>
 	<button tabindex="7" type="submit" class="btn btn-succes btn-large">Generate key</button>
 </form>
 <%String privateKey=(String)request.getAttribute("privateKey");

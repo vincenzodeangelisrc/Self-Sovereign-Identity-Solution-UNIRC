@@ -1,3 +1,4 @@
+
 package it.unirc.user.fileStorage;
 
 import java.awt.EventQueue;
@@ -162,6 +163,7 @@ public class User_FileStorage {
 		JButton btnNewButton = new JButton("Store");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+
 				try {
 					byte[]file= Files.readAllBytes(Paths.get(textField.getText()));
 					KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
@@ -173,17 +175,17 @@ public class User_FileStorage {
 					cipher.init(Cipher.ENCRYPT_MODE, symmetricKey);
 
 					byte[] encryptedFile= cipher.doFinal(file);
-					
-					
+
+
 					String ipfsIndex=IPFSWrapper.store(encryptedFile);
-					
-					
-					
-					
+
+
+
+
 
 					byte[] symmetricKeyBytes=symmetricKey.getEncoded();
 
-				
+
 					FileReader f;
 					BufferedReader b;
 					f=new FileReader("src\\it\\unirc\\user\\Keys\\PK.txt");	
@@ -193,15 +195,14 @@ public class User_FileStorage {
 					byte[]PK=Hex.decodeHex(pkS);
 
 					String basicPolicy="ID_u and "+selectedLabel;
-			
-				
+
+
 					byte[] encryptedSymmetricKey=CryptoCPABPRE.encrypt(symmetricKeyBytes,basicPolicy, PK);
 
 					String keyHex=String.valueOf(Hex.encodeHex(encryptedSymmetricKey));
-					
-					
-					
-					
+
+
+
 					JFileChooser chooser = new JFileChooser(); 
 					chooser.setCurrentDirectory(new java.io.File("."));
 					chooser.setDialogTitle("Select Folder");
@@ -214,8 +215,10 @@ public class User_FileStorage {
 					out.println(keyHex);	
 					out.println(ipfsIndex);	
 					out.println(selectedLabel);	
-					
+
 					out.close();
+
+
 
 
 
@@ -265,50 +268,50 @@ public class User_FileStorage {
 		JButton button_4 = new JButton("Notarize");
 		button_4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				long in=System.nanoTime();
 				try {
-				BufferedReader reader = new BufferedReader(new FileReader(textField_3.getText()));
+					BufferedReader reader = new BufferedReader(new FileReader(textField_3.getText()));
 
-				String sf=reader.readLine();
-				String IPFSindex=reader.readLine();
-				String label=reader.readLine();
-				reader.close();
-				
-				
-				String contractAddr="0x04340909c8b52abe7964a1e0c4d993958c13b937";
-				String endPoint = "https://ropsten.infura.io/v3/b416fd1f93c8450d849e176e06d37c88";
-				FileReader f=new FileReader("src\\it\\unirc\\user\\Keys\\User_PrivateEthereumKey.txt");
-				BufferedReader b=new BufferedReader(f);
-				String privateEthKeyUser=b.readLine();
-				Credentials credsUser = Credentials.create(privateEthKeyUser);
-				StaticGasProvider SGP=new StaticGasProvider(BigInteger.valueOf(4_100_000_000L),new BigInteger("999999"));
-				Web3j web3 = Web3j.build(new HttpService(endPoint));
-				SmartContract n= SmartContract.load(contractAddr, web3, credsUser,SGP );
-				
-				MessageDigest digest = MessageDigest.getInstance("SHA-256");
-				byte[] encodedhash = digest.digest((sf+IPFSindex+label).getBytes(StandardCharsets.UTF_8));
-				
-				TransactionReceipt receipt = n.confirmNotarization(BigInteger.ONE, Numeric.hexStringToByteArray(bytesToHex(encodedhash))).send();
-				
-				System.out.println(receipt);
-				b.close();
-				
-				
-				
-				n= SmartContract.load(contractAddr, web3, credsUser, SGP);
-				List<byte[]> list= n.getHashList("0x89960b435c47eDB0C6bC1E707a387EA752273403", BigInteger.ONE).send();
+					String sf=reader.readLine();
+					String IPFSindex=reader.readLine();
+					String label=reader.readLine();
+					reader.close();
 
 
+					String contractAddr="0xdbc89db0f94815f72237f87dc656a0fd01680da4";
+					String endPoint = "https://ropsten.infura.io/v3/b416fd1f93c8450d849e176e06d37c88";
+					FileReader f=new FileReader("src\\it\\unirc\\user\\Keys\\User_PrivateEthereumKey.txt");
+					BufferedReader b=new BufferedReader(f);
+					String privateEthKeyUser=b.readLine();
+					Credentials credsUser = Credentials.create(privateEthKeyUser);
+					StaticGasProvider SGP=new StaticGasProvider(BigInteger.valueOf(4_100_000_000L),new BigInteger("999999"));
+					Web3j web3 = Web3j.build(new HttpService(endPoint));
+					SmartContract n= SmartContract.load(contractAddr, web3, credsUser,SGP );
 
-				System.out.println("NOTARIZATION"+": "+list.size()+" files involved"); 
-				for(int i=0; i<list.size();i++){ 
-					System.out.println(i+".Index: "); 
-					System.out.println(TypeEncoder.encode(new Bytes32(list.get(i)))); }
-				
-				
+					MessageDigest digest = MessageDigest.getInstance("SHA-256");
+					byte[] encodedhash = digest.digest((sf+IPFSindex+label).getBytes(StandardCharsets.UTF_8));
+
+					TransactionReceipt receipt = n.confirmNotarization(BigInteger.ONE, Numeric.hexStringToByteArray(bytesToHex(encodedhash))).send();
+
+					System.out.println(receipt);
+					b.close();
+					long fin=System.nanoTime();
+					System.out.println(fin-in);
+
+					n= SmartContract.load(contractAddr, web3, credsUser, SGP);
+					List<byte[]> list= n.getHashList("0x89960b435c47eDB0C6bC1E707a387EA752273403", BigInteger.ONE).send();
+
+
+
+					System.out.println("NOTARIZATION"+": "+list.size()+" files involved"); 
+					for(int i=0; i<list.size();i++){ 
+						System.out.println(i+".Index: "); 
+						System.out.println(TypeEncoder.encode(new Bytes32(list.get(i)))); }
+
+
 				}catch(Exception e1) {e1.printStackTrace();}
-				
-				
+
+
 			}
 		});
 		button_4.setBounds(328, 37, 85, 21);
@@ -317,14 +320,14 @@ public class User_FileStorage {
 
 	}
 	private static String bytesToHex(byte[] hash) {
-	    StringBuilder hexString = new StringBuilder(2 * hash.length);
-	    for (int i = 0; i < hash.length; i++) {
-	        String hex = Integer.toHexString(0xff & hash[i]);
-	        if(hex.length() == 1) {
-	            hexString.append('0');
-	        }
-	        hexString.append(hex);
-	    }
-	    return hexString.toString();
+		StringBuilder hexString = new StringBuilder(2 * hash.length);
+		for (int i = 0; i < hash.length; i++) {
+			String hex = Integer.toHexString(0xff & hash[i]);
+			if(hex.length() == 1) {
+				hexString.append('0');
+			}
+			hexString.append(hex);
+		}
+		return hexString.toString();
 	}
 }

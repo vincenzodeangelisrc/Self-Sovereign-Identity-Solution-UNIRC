@@ -85,6 +85,7 @@ public class CP_DeploySC {
 					SmartContract n = SmartContract.deploy(web3, credsCP, SGP).send();
 					System.out.println(n.getContractAddress());
 					
+					
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

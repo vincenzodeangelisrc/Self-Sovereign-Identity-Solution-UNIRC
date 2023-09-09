@@ -22,6 +22,7 @@ import org.web3j.utils.Numeric;
 import it.unirc.Ethereum.SmartContract;
 import it.unirc.IPFS.IPFSWrapper;
 import it.unirc.LiangScheme.CryptoCPABPRE;
+import it.unirc.Trinsic.Trinsic;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -58,6 +59,7 @@ public class SP_Decryptor {
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
+			
 			public void run() {
 				try {
 					SP_Decryptor window = new SP_Decryptor();
@@ -125,6 +127,7 @@ public class SP_Decryptor {
 		JButton btnNewButton = new JButton("Decrypt");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				long start=System.nanoTime();
 				try {
 					FileReader f=new FileReader("src\\it\\unirc\\SP\\Keys\\PK.txt");	
 					BufferedReader b=new BufferedReader(f);
@@ -139,6 +142,10 @@ public class SP_Decryptor {
 					b.close();
 					byte[]privateKey=Hex.decodeHex(privateKeyS);
 
+					long fin =System.nanoTime();
+					
+					long part=fin-start;
+					
 					JFileChooser chooser = new JFileChooser(); 
 					chooser.setCurrentDirectory(new java.io.File("."));
 					chooser.setDialogTitle("Select Folder");
@@ -146,6 +153,7 @@ public class SP_Decryptor {
 					chooser.showOpenDialog(btnNewButton);
 					String path= chooser.getSelectedFile().toString(); 
 
+					start=System.nanoTime();
 					List<String> fileContent = new ArrayList<String>(Files.readAllLines(Paths.get(textField.getText()), StandardCharsets.UTF_8));
 
 					int i=0;
@@ -165,15 +173,19 @@ public class SP_Decryptor {
 
 							byte[] decryptedFile= cipher.doFinal(encryptedFile);
 
-
+							try {
+								if(!Trinsic.verifyCredential(new String(decryptedFile))) {return;}
+							} catch (Exception e1) {
+							}
 
 
 							FileUtils.writeByteArrayToFile(new File(path+"\\File"+i+".ext"), decryptedFile);
 							i++;}
 					}	
 
-
-
+					fin=System.nanoTime();
+					
+					System.out.println(fin-start+part);
 
 
 
@@ -234,7 +246,7 @@ public class SP_Decryptor {
 						data=data+s+"\n";
 					}
 
-					String contractAddr="0x04340909c8b52abe7964a1e0c4d993958c13b937";
+					String contractAddr="0xdbc89db0f94815f72237f87dc656a0fd01680da4";
 					String endPoint = "https://ropsten.infura.io/v3/b416fd1f93c8450d849e176e06d37c88";
 					FileReader f=new FileReader("src\\it\\unirc\\SP\\Keys\\SP_PrivateEthereumKey.txt");
 					BufferedReader b=new BufferedReader(f);

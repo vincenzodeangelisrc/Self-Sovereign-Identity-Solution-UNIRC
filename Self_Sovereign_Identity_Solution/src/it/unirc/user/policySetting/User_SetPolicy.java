@@ -161,6 +161,8 @@ public class User_SetPolicy {
 		JButton btnNewButton = new JButton("Set Policy");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				long start=System.nanoTime();
 				try {
 					FileReader f=new FileReader(textField.getText());
 					BufferedReader b=new BufferedReader(f);
@@ -182,6 +184,8 @@ public class User_SetPolicy {
 					
 					byte[]rk=CryptoCPABPRE.RKGen(privateKey, PK, policy);
 					String rkHex=String.valueOf(Hex.encodeHex(rk));
+					long fin=System.nanoTime();
+					System.out.println(fin-start);
 					
 					
 				
@@ -259,7 +263,7 @@ public class User_SetPolicy {
 				reader.close();
 				
 				
-				String contractAddr="0x04340909c8b52abe7964a1e0c4d993958c13b937";
+				String contractAddr="0xdbc89db0f94815f72237f87dc656a0fd01680da4";
 				String endPoint = "https://ropsten.infura.io/v3/b416fd1f93c8450d849e176e06d37c88";
 				FileReader f=new FileReader("src\\it\\unirc\\user\\Keys\\User_PrivateEthereumKey.txt");
 				BufferedReader b=new BufferedReader(f);

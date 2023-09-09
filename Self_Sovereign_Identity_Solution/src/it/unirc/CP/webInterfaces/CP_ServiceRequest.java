@@ -70,7 +70,7 @@ public class CP_ServiceRequest extends HttpServlet {
 			return;
 		}
 		else {
-
+			long start =System.nanoTime();
 			String EthAddressSP=request.getParameter("Eth_Add");
 
 			boolean found=false;
@@ -88,6 +88,7 @@ public class CP_ServiceRequest extends HttpServlet {
 
 
 			if(!found) {
+				
 				//Contact CA to verify the mapping between Eth_SP and ID_SP
 
 				FileWriter fw = new FileWriter(this.getServletContext().getRealPath("src/it/unirc/CP/Tables/").replace("\\.metadata\\.plugins\\org.eclipse.wst.server.core\\tmp0\\wtpwebapps", "")+"SP_Association_Table.txt",true);
@@ -165,10 +166,12 @@ public class CP_ServiceRequest extends HttpServlet {
 				
 				finalRes=finalRes+s+"\n";
 			}
-			System.out.println(finalRes);
+			
+			
+		
 			try {
 				//Notarization
-				String contractAddr="0x04340909c8b52abe7964a1e0c4d993958c13b937";
+				String contractAddr="0xdbc89db0f94815f72237f87dc656a0fd01680da4";
 				String endPoint = "https://ropsten.infura.io/v3/b416fd1f93c8450d849e176e06d37c88";
 				FileReader f=new FileReader(this.getServletContext().getRealPath("src/it/unirc/CP/Keys/CP_PrivateEthereumKey.txt").replace("\\.metadata\\.plugins\\org.eclipse.wst.server.core\\tmp0\\wtpwebapps", ""));
 				BufferedReader b=new BufferedReader(f);
